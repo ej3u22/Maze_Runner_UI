@@ -16,7 +16,7 @@ import tkinter
 import maze
 import runner
 import math
-import maze_runner
+import maze_runner 
 
 # Globals
 root = tkinter.Tk()
