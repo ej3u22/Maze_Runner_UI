@@ -1,6 +1,9 @@
 # Maze_Runner_UI
 A cheap and cheerful top layer of code to display and debug the Maze runner work.
 
+Acknowledgements:
+The character images were created by Kenney (https://kenney.nl/); they have a wealth of free to use assets completely copyright free! Absolutely worth a look and if you find them useful, shout them a coffee!
+
 Requires:
 - Maze module
 - Runner module (does not have to be complete)
