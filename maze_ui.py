@@ -16,7 +16,7 @@ import tkinter
 import maze
 import runner
 import math
-import maze_runner 
+import maze_runner
 
 # Globals
 root = tkinter.Tk()
@@ -324,7 +324,7 @@ def create_window(maze_object, given_goal):
                     time.sleep(0.1)
 
             if "shortest_path" in dir(maze_runner): # Checks that the shortest path function exists, ignores if not
-                shortestpath = maze_runner.shortest_path(maze_object, runner=runner_object, breadcrumbs=breadcrumbs)
+                shortestpath = maze_runner.shortest_path(maze_object, starting=(0,0), goal=given_goal)# runner=runner_object, breadcrumbs=breadcrumbs)
                 explore_state[1] = shortestpath
                 explore_state[0] = "Shortest"
             else:
