@@ -180,8 +180,6 @@ def render_runner(maze_canvas, maze_object, runner_object, exploring, runner_nam
         "Images", runner_name
     )  # Frames, then table of images so they stay existing in memory
 
-    runner_crumbs = runner_object["visited"]
-
     _, m_size_y = maze.get_dimensions(
         maze_object
     )  # Fetch the dimensions of the given maze.
@@ -236,8 +234,6 @@ def render_runner(maze_canvas, maze_object, runner_object, exploring, runner_nam
         
 
     while exploring[0] == "Searching": # We are moving our runner in real time, this requires us using threads and messy systems.
-        if len(runner_crumbs) <= 0:
-            continue
 
         current_step = (runner.get_x(runner_object), runner.get_y(runner_object))
 
@@ -271,11 +267,12 @@ def render_runner(maze_canvas, maze_object, runner_object, exploring, runner_nam
                 maze_canvas.itemconfig(given_crumb, outline="green", width=4)
         
 
-def create_window(maze_object):
+def create_window(maze_object, given_goal):
     '''
     Docstring for create_window
     
-    :param maze_object: Description
+    :param maze_object: The actual maze object that has been created
+    :param given_goal: If the user has passed a goal in the terminal, it is passed here, otherwise it defaults as None
     '''
     import threading
 
@@ -293,8 +290,10 @@ def create_window(maze_object):
 
     global mouse_coord
 
+    maze_name = "Test Maze"
+
     title_list = tkinter.Label(
-        root, text=f"This is a maze called {maze_object['name']}"
+        root, text=f"This is a maze called {maze_name}"
     )
     mouse_coord = tkinter.Label(root, text="x: 0, y: 0")
     maze_window = tkinter.Canvas(root, width=400, height=400)
@@ -316,7 +315,7 @@ def create_window(maze_object):
 
         def hold(runner_object, maze_object):
             global EXPLORE_LIVE
-            breadcrumbs = runner.explore(runner_object, maze_object)
+            breadcrumbs = runner.explore(runner_object, maze_object, given_goal)
 
             if not EXPLORE_LIVE:
                 explore_state[1] = breadcrumbs
@@ -352,7 +351,8 @@ if __name__ == "__main__":
 
     parser.add_argument("-r", "--runner", type=int, choices=[0,1,2], help="chooses the runner 0 is Mouse, 1 is Wolf, 2 is Bugbin")
     parser.add_argument("-s", "--speed", type=int, help="determines the length of time the runner will solve the maze in")
-    parser.add_argument("-l", "--live",  type=int, help="will attempt to display the runner at it's live position, requires the runner to use time.sleep")
+    parser.add_argument("-l", "--live", action="store_true", help="will attempt to display the runner at it's live position, requires the runner to use time.sleep")
+    parser.add_argument("-g", "--goal", nargs="+", type=int, help="Select your goal target; x y")
 
     args = parser.parse_args()
     if args.speed != None:
@@ -364,5 +364,10 @@ if __name__ == "__main__":
             EXPLORE_AVATAR = "Wolf"
         elif args.runner == 2:
             EXPLORE_AVATAR = "Bugbin"
+    if args.live:
+        EXPLORE_LIVE = True
+    given_goal = None
+    if args.goal != None:
+        given_goal = tuple(args.goal)
     maze_object = maze_runner.maze_reader(args.maze)
-    create_window(maze_object)
+    create_window(maze_object, given_goal)
